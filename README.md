@@ -1,9 +1,9 @@
 # AuthentiHire 🛡️
 
 > **An AI-powered verification ecosystem built to eliminate job fraud and safeguard applicant data.**
-
 Developed and prototyped under intense competition cycles during the **Bower AI Hackathon at T-Hub, Hyderabad**.
 
+**🌐 [Live Demo / AuthentiHire Prototype](https://42rkhw.csb.app/)**
 
 ## Detailed Problem Statement
 The open-source nature of today’s recruitment landscape has created an unintended vulnerability: the rapid weaponization of fake job descriptions. Malicious actors, data brokers, and ghost recruiters deploy hyper-realistic, AI-generated job postings to harvest sensitive applicant information (PII), execute phishing schemes, or run advanced employment scams. 
