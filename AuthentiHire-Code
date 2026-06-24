@@ -1,0 +1,265 @@
+<html lang="en"><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AuthentiHire | Forensic Suite V14.4</title>
+    <style>
+        :root {
+            --bg: #05070a;
+            --card: #0d1117;
+            --accent: #00ffaa;
+            --warning: #f1c40f;
+            --danger: #ff3366;
+            --text: #e6edf3;
+            --secondary: #8b949e;  
+        }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', -apple-system, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            scroll-behavior: smooth;
+            overflow-x: hidden;
+        }
+
+        /* Viewport Management */
+        .view {
+            min-height: 100vh;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            box-sizing: border-box;
+            animation: fadeIn 0.4s ease-in-out;
+        }
+
+        .view.active { display: flex; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* View 1: Home Page */
+        .hero-content { text-align: center; max-width: 800px; }
+        .hero-content h1 { font-size: 3.5rem; margin: 0; color: var(--accent); letter-spacing: -1px; }
+        .hero-content p { font-size: 1.2rem; color: var(--secondary); margin: 20px 0 40px; }
+
+        .btn-primary {
+            padding: 18px 40px;
+            background: var(--accent);
+            color: var(--bg);
+            border: none;
+            border-radius: 8px;
+            font-weight: 800;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: 0.3s;
+            text-transform: uppercase;
+        }
+
+        .btn-primary:hover { transform: scale(1.05); box-shadow: 0 0 30px rgba(0, 255, 170, 0.4); }
+
+        /* View 2 & 3: Forms & Dashboard */
+        .glass-panel {
+            background: var(--card);
+            border: 1px solid #30363d;
+            padding: 40px;
+            border-radius: 16px;
+            width: 100%;
+            max-width: 600px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+        }
+
+        .input-group { margin-bottom: 25px; }
+        label { display: block; margin-bottom: 10px; color: var(--accent); font-weight: 600; font-size: 0.8rem; text-transform: uppercase; }
+
+        select, input, textarea {
+            width: 100%;
+            padding: 14px;
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 8px;
+            color: white;
+            font-size: 1rem;
+            box-sizing: border-box;
+        }
+
+        textarea { height: 150px; resize: none; }
+
+        .btn-back {
+            background: transparent;
+            color: var(--secondary);
+            border: none;
+            cursor: pointer;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        /* Results UI */
+        .result-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 15px; }
+        .risk-score { font-size: 3rem; font-weight: bold; }
+        .meter-bg { height: 10px; background: #30363d; border-radius: 5px; margin: 20px 0; overflow: hidden; }
+        .meter-fill { height: 100%; width: 0%; transition: width 1s cubic-bezier(0.1, 0.7, 0.1, 1); }
+        .finding { font-size: 0.95rem; color: var(--secondary); margin-bottom: 10px; padding-left: 20px; position: relative; }
+        .finding::before { content: "»"; position: absolute; left: 0; color: var(--accent); }
+
+    </style>
+</head>
+<body>
+
+    <div id="homeView" class="view active">
+        <div class="hero-content">
+            <div style="font-weight: bold; color: var(--accent); margin-bottom: 10px; letter-spacing: 2px;">V14.4 FORENSIC PROTOCOL</div>
+            <h1>AUTHENTIHIRE</h1>
+            <p>The final line of defense against recruitment fraud. We audit the intent, not just the identity.</p>
+            <button class="btn-primary" onclick="showView('step1View')">Start Intelligence Scan</button>
+        </div>
+    </div>
+
+    <div id="step1View" class="view">
+        <div class="glass-panel">
+            <button class="btn-back" onclick="showView('homeView')">← Return to Base</button>
+            <h2 style="margin-top: 0;">Step 1: Origin Audit</h2>
+            <div class="input-group">
+                <label>Select Origin Type</label>
+                <select id="originType">
+                    <option value="trusted">Trusted Platform (LinkedIn/Unstop)</option>
+                    <option value="educational">Educational (.edu / .ac.in)</option>
+                    <option value="corporate">Corporate Domain (@company.com)</option>
+                    <option value="public">Public / Unknown (Gmail/Outlook)</option>
+                </select>
+            </div>
+            <div class="input-group">
+                <label>Sender Email or Phone</label>
+                <input type="text" id="contactInfo" placeholder="e.g. 1ds21cs140@dsce.edu.in">
+            </div>
+            <button class="btn-primary" style="width: 100%;" onclick="showView('step2View')">Next: Content Analysis</button>
+        </div>
+    </div>
+
+    <div id="step2View" class="view">
+        <div class="glass-panel">
+            <button class="btn-back" onclick="showView('step1View')">← Previous Step</button>
+            <h2 style="margin-top: 0;">Step 2: DNA Scan</h2>
+            <div class="input-group">
+                <label>Paste Message / Email Content</label>
+                <textarea id="mainContent" placeholder="Paste the suspicious content here..."></textarea>
+            </div>
+            <button class="btn-primary" style="width: 100%;" id="scanBtn" onclick="executeForensicScan()">Run Forensic Audit</button>
+
+            <div id="resultArea" style="display: none; margin-top: 30px; border-top: 1px solid #333; padding-top: 20px;">
+                <div class="result-header">
+                    <div>
+                        <div id="verdictLabel" style="font-weight: bold; font-size: 0.9rem;">ASSESSING...</div>
+                        <div id="riskValue" class="risk-score">00</div>
+                    </div>
+                    <div style="color: var(--secondary); font-size: 0.7rem; text-align: right;">SYSTEM RISK INDEX</div>
+                </div>
+                <div class="meter-bg">
+                    <div id="meterFill" class="meter-fill"></div>
+                </div>
+                <div id="findingsContainer"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showView(viewId) {
+            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+            document.getElementById(viewId).classList.add('active');
+        }
+
+        function executeForensicScan() {
+    const origin = document.getElementById('originType').value;
+    const contact = document.getElementById('contactInfo').value.toLowerCase();
+    const body = document.getElementById('mainContent').value.toLowerCase();
+    const resultArea = document.getElementById('resultArea');
+    const scanBtn = document.getElementById('scanBtn');
+
+    scanBtn.innerText = "Analyzing Context...";
+    scanBtn.disabled = true;
+
+    setTimeout(() => {
+        let score = 0;
+        let findings = [];
+
+        // 1. DANGER OVERLAP: Only trigger if 'Fee' AND 'Brand' exist together
+        const hasFee = ["fee", "payment", "scholarship code", "base fee"].some(w => body.includes(w));
+        const hasBrand = ["ibm", "microsoft", "amazon", "google"].some(w => body.includes(w));
+        
+        if (hasFee && hasBrand) {
+            score += 60;
+            findings.push("REVENUE TRAP: Suspicious request for payment using corporate brand bait.");
+        } else if (hasFee) {
+            score += 30; // Just a fee mention, but no brand impersonation
+            findings.push("FINANCIAL ALERT: Mention of fees in a recruitment context.");
+        }
+
+        // 2. SENDER VALIDATION (The Fix for Real vs Fake Edu)
+        if (origin === 'educational') {
+            if (body.includes("placement cell") || body.includes("official circular")) {
+                score -= 20; // GREEN FLAG: Reduces risk if it looks like college admin
+                findings.push("VERIFIED PATTERN: Content matches institutional circular format.");
+            } else if (body.includes("corizo") || body.includes("hiring team")) {
+                score += 35;
+                findings.push("SENDER MISMATCH: Student account acting as external recruiter.");
+            }
+        }
+
+        // 3. URGENCY CHECK (Refined)
+        if ((body.includes("slot left") || body.includes("act fast")) && hasFee) {
+            score += 20;
+            findings.push("HIGH PRESSURE: Combined urgency with financial demands.");
+        }
+
+        // 4. GREEN FLAGS (Legitimacy Markers to lower the score)
+        if (body.includes("interview schedule") && !hasFee) {
+            score -= 15;
+        }
+        if (body.includes("no registration fee") || body.includes("free of cost")) {
+            score -= 25;
+        }
+
+        // 5. REDIRECTION
+        if (body.includes("whatsapp") || body.includes("telegram")) {
+            score += 15;
+            findings.push("OFF-PLATFORM: Request to move to private messaging.");
+        }
+
+        // Final score normalization
+        score = Math.max(0, Math.min(score, 100)); // Ensure it stays between 0-100
+        
+        resultArea.style.display = 'block';
+        scanBtn.innerText = "Audit Complete";
+        
+        const fill = document.getElementById('meterFill');
+        const riskVal = document.getElementById('riskValue');
+        const vLabel = document.getElementById('verdictLabel');
+        const fContainer = document.getElementById('findingsContainer');
+
+        let color = "#00ffaa";
+        let status = "SECURE";
+
+        if (score > 30 && score < 70) { color = "#f1c40f"; status = "SUSPICIOUS"; }
+        else if (score >= 70) { color = "#ff3366"; status = "CRITICAL RISK"; }
+
+        riskVal.innerText = score;
+        riskVal.style.color = color;
+        vLabel.innerText = status;
+        vLabel.style.color = color;
+        fill.style.width = score + "%";
+        fill.style.backgroundColor = color;
+        
+        if (findings.length === 0 && score < 20) {
+            fContainer.innerHTML = `<div class="finding">No forensic anomalies detected. Communication appears standard.</div>`;
+        } else {
+            fContainer.innerHTML = findings.map(f => `<div class="finding">${f}</div>`).join('');
+        }
+    }, 800);
+}
+    </script>
+
+</body></html>
